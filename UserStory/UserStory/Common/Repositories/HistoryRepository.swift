@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol HistoryRepositoryProtocol {
     func add(id: String)
     func isInHistory(id: String) -> Bool

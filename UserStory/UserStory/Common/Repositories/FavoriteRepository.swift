@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol FavoriteRepositoryProtocol {
     func add(id: String)
     func remove(id: String)

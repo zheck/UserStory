@@ -12,6 +12,7 @@ enum StorageKey: String {
     case favorite
 }
 
+// sourcery: AutoMockable
 protocol LocalStorageProtocol {
     func object<T>(for key: StorageKey) -> T?
     func set<T>(object: T, with: StorageKey)

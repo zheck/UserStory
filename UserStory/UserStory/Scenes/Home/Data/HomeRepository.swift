@@ -11,6 +11,7 @@ enum ServiceError: Error {
     case invalidURL
 }
 
+// sourcery: AutoMockable
 protocol HomeRepositoryProtocol {
     func fetch(page: Int) async throws -> [UserStory]
 }

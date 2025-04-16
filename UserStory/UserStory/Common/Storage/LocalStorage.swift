@@ -9,8 +9,8 @@ import Foundation
 
 enum StorageKey: String {
     case history
+    case favorite
 }
-
 
 protocol LocalStorageProtocol {
     func object<T>(for key: StorageKey) -> T?
@@ -23,5 +23,6 @@ extension UserDefaults: LocalStorageProtocol {
     }
     func set<T>(object: T, with key: StorageKey) {
         set(object, forKey: key.rawValue)
+        synchronize()
     }
 }

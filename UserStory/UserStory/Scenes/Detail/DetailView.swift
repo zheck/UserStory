@@ -9,19 +9,31 @@ import SwiftUI
 
 struct DetailView: View {
 
-    private let storyConfig: StoryConfig
-    private let viewModel: DetailViewModel
+    @ObservedObject var viewModel: DetailViewModel
 
-    init(storyConfig: StoryConfig) {
-        self.storyConfig = storyConfig
-        // TODO: use a proper factory to generate viewModel
-        viewModel = DetailViewModel(storyId: storyConfig.id)
+    init(story: UserStory) {
+        viewModel = DetailViewModel(story: story)
     }
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-            .onAppear {
-                viewModel.onAppear()
+        ZStack {
+            AsyncImage(url: viewModel.imageURL)
+            Text(viewModel.imageURL.absoluteString)
+            VStack(alignment: .leading) {
+                Spacer()
+                HStack(alignment: .bottom) {
+                    Image(systemName: "heart.fill")
+                        .onTapGesture {
+                            viewModel.toggleFavorite()
+                        }
+                        .foregroundStyle(viewModel.isFavorite ? .red : .white)
+                        .padding()
+                    Spacer()
+                }
             }
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
 }

@@ -31,9 +31,11 @@ struct HomeView: View {
         List {
             ForEach(viewModel.storyConfigs, id: \.id) { story in
                 NavigationLink {
-                    DetailView(storyConfig: story)
+                    if let story = viewModel.story(with: story.id) {
+                        DetailView(story: story)
+                    }
                 } label: {
-                    StoryView(story: story)
+                    HomeItemView(story: story)
                 }
             }
             ProgressView()

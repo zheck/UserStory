@@ -1,5 +1,5 @@
 //
-//  StoryView.swift
+//  HomeItemView.swift
 //  UserStory
 //
 //  Created by Fong Zhou on 16/04/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StoryView: View {
+struct HomeItemView: View {
 
     let story: StoryConfig
     

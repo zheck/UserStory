@@ -22,6 +22,7 @@ final class HomeViewModel: ObservableObject {
     
     private let homeRepository: HomeRepositoryProtocol
     private let historyRepository: HistoryRepositoryProtocol
+    private let favoriteRepository: FavoriteRepositoryProtocol
 
     private var currentPage: Int = 0
     private var isLoading: Bool = false
@@ -29,10 +30,12 @@ final class HomeViewModel: ObservableObject {
     
     init(
         homeRepository: HomeRepositoryProtocol = HomeRepository(),
-        historyRepository: HistoryRepositoryProtocol = Dependencies.shared.historyRepository
+        historyRepository: HistoryRepositoryProtocol = Dependencies.shared.historyRepository,
+        favoriteRepository: FavoriteRepositoryProtocol = Dependencies.shared.favoriteRepository
     ) {
         self.homeRepository = homeRepository
         self.historyRepository = historyRepository
+        self.favoriteRepository = favoriteRepository
     }
 
     @MainActor
@@ -56,6 +59,10 @@ final class HomeViewModel: ObservableObject {
     func onAppear() {
         storyConfigs = stories.map { convert(story: $0) }
     }
+
+    func story(with id: String) -> UserStory? {
+        return stories.first { $0.id == id }
+    }
     
     private func convert(story: UserStory) -> StoryConfig {
         return .init(
@@ -63,7 +70,7 @@ final class HomeViewModel: ObservableObject {
             description: story.name,
             image: story.photo,
             hasSeen: historyRepository.isInHistory(id: story.id),
-            isFavorite: false
+            isFavorite: favoriteRepository.isFavorite(id: story.id)
         )
     }
 }

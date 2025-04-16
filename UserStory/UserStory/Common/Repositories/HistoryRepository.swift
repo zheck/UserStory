@@ -15,7 +15,7 @@ protocol HistoryRepositoryProtocol {
 final class HistoryRepository: HistoryRepositoryProtocol {
 
     private let storage: LocalStorageProtocol
-    private var history: Set<String>
+    private var history: [String]
     
     init(storage: LocalStorageProtocol = UserDefaults.standard) {
         self.storage = storage
@@ -27,7 +27,7 @@ final class HistoryRepository: HistoryRepositoryProtocol {
     }
     
     func add(id: String) {
-        history.insert(id)
+        history.append(id)
         storage.set(object: Array(history), with: .history)
     }
 }

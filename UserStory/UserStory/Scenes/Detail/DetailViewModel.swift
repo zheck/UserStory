@@ -6,22 +6,35 @@
 //
 
 import Foundation
+import Combine
 
-final class DetailViewModel {
+final class DetailViewModel: ObservableObject {
 
     private let historyRepository: HistoryRepositoryProtocol
-    private let storyId: String
+    private let favoriteRepository: FavoriteRepositoryProtocol
+    private let story: UserStory
+    
+    @Published var isFavorite: Bool
+    private(set) var imageURL: URL
     
     init(
         historyRepository: HistoryRepositoryProtocol = Dependencies.shared.historyRepository,
-        storyId: String
+        favoriteRepository: FavoriteRepositoryProtocol = Dependencies.shared.favoriteRepository,
+        story: UserStory
     ) {
         self.historyRepository = historyRepository
-        self.storyId = storyId
+        self.favoriteRepository = favoriteRepository
+        self.story = story
+        self.isFavorite = favoriteRepository.isFavorite(id: story.id)
+        self.imageURL = story.photo
     }
     
     func onAppear() {
-        historyRepository.add(id: storyId)
+        historyRepository.add(id: story.id)
     }
-    
+
+    func toggleFavorite() {
+        isFavorite ? favoriteRepository.remove(id: story.id) : favoriteRepository.add(id: story.id)
+        isFavorite.toggle()
+    }
 }

@@ -12,6 +12,7 @@ struct Dependencies {
     static let shared = Dependencies()
 
     let historyRepository: HistoryRepositoryProtocol = HistoryRepository()
+    let favoriteRepository: FavoriteRepositoryProtocol = FavoriteRepository()
 
     private init() {}
 }

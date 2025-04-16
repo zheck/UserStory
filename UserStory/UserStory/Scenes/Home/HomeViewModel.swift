@@ -11,20 +11,28 @@ struct StoryConfig: Equatable {
     let id: String
     let description: String
     let image: URL
+    let hasSeen: Bool
+    let isFavorite: Bool
 }
 
 final class HomeViewModel: ObservableObject {
 
-    private let homeRepository: HomeRepositoryProtocol
-    private var currentPage: Int = 0
-    private var isLoading: Bool = false
-    private var stories: [UserStory] = []
-
     @Published private(set) var storyConfigs: [StoryConfig] = []
     @Published private(set) var error: Error? = nil
     
-    init(homeRepository: HomeRepositoryProtocol = HomeRepository()) {
+    private let homeRepository: HomeRepositoryProtocol
+    private let historyRepository: HistoryRepositoryProtocol
+
+    private var currentPage: Int = 0
+    private var isLoading: Bool = false
+    private var stories: [UserStory] = []
+    
+    init(
+        homeRepository: HomeRepositoryProtocol = HomeRepository(),
+        historyRepository: HistoryRepositoryProtocol = Dependencies.shared.historyRepository
+    ) {
         self.homeRepository = homeRepository
+        self.historyRepository = historyRepository
     }
 
     @MainActor
@@ -45,11 +53,17 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
+    func onAppear() {
+        storyConfigs = stories.map { convert(story: $0) }
+    }
+    
     private func convert(story: UserStory) -> StoryConfig {
         return .init(
             id: story.id,
             description: story.name,
-            image: story.photo
+            image: story.photo,
+            hasSeen: historyRepository.isInHistory(id: story.id),
+            isFavorite: false
         )
     }
 }

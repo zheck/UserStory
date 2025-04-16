@@ -17,6 +17,9 @@ struct HomeView: View {
                 Text(String(describing: error))
             } else {
                 contentView
+                    .onAppear {
+                        viewModel.onAppear()
+                    }
             }
         }
         .task {
@@ -27,7 +30,11 @@ struct HomeView: View {
     var contentView: some View {
         List {
             ForEach(viewModel.storyConfigs, id: \.id) { story in
-                Text(story.description)
+                NavigationLink {
+                    DetailView(storyConfig: story)
+                } label: {
+                    StoryView(story: story)
+                }
             }
             ProgressView()
                 .task {
@@ -36,4 +43,3 @@ struct HomeView: View {
         }
     }
 }
-

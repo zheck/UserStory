@@ -15,7 +15,11 @@ struct StoryConfig: Equatable {
 
 final class HomeViewModel: ObservableObject {
 
-    let homeRepository: HomeRepositoryProtocol
+    private let homeRepository: HomeRepositoryProtocol
+    private var currentPage: Int = 0
+    private var isLoading: Bool = false
+    private var stories: [UserStory] = []
+
     @Published private(set) var storyConfigs: [StoryConfig] = []
     @Published private(set) var error: Error? = nil
     
@@ -25,10 +29,18 @@ final class HomeViewModel: ObservableObject {
 
     @MainActor
     func loadStories() async {
+        guard !isLoading else { return }
+        isLoading = true
+        currentPage += 1
         do {
-            let stories = try await homeRepository.fetch()
-            storyConfigs = stories.map { convert(story: $0) }
+            let userStories = try await homeRepository.fetch(page: currentPage)
+            isLoading = false
+
+            let userStoryConfigs = userStories.map { convert(story: $0) }
+            self.stories.append(contentsOf: userStories)
+            self.storyConfigs.append(contentsOf: userStoryConfigs)
         } catch {
+            isLoading = false
             self.error = error
         }
     }

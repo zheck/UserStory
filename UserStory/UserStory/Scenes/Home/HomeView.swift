@@ -29,6 +29,10 @@ struct HomeView: View {
             ForEach(viewModel.storyConfigs, id: \.id) { story in
                 Text(story.description)
             }
+            ProgressView()
+                .task {
+                    await viewModel.loadStories()
+                }
         }
     }
 }
